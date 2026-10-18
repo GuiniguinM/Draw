@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5f4ef">
+  <title>Good Cheer | Gift Exchange</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap');
+
+    :root {
+      color-scheme: light;
+      --paper: #f5f4ef;
+      --ink: #202622;
+      --muted: #777c73;
+      --line: #deded5;
+      --green: #166b52;
+      --green-dark: #10523f;
+      --coral: #e77353;
+      --gold: #e8b945;
+      --blue: #467cbd;
+      --white: #fffefa;
+      --serif: 'Fraunces', Georgia, serif;
+      --sans: 'DM Sans', 'Segoe UI', sans-serif;
+      --mono: 'DM Mono', Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background-color: var(--paper);
+      background-image: radial-gradient(#d8d8ce 0.7px, transparent 0.7px);
+      background-size: 18px 18px;
+      font-family: var(--sans);
+    }
+
+    button, input, textarea { font: inherit; }
+    button { color: inherit; }
+
+    .topbar {
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(20px, 5vw, 76px);
+      border-bottom: 1px solid var(--line);
+      background: rgba(245, 244, 239, 0.92);
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: 0; }
+    .brand-mark { width: 27px; height: 27px; display: grid; place-items: center; color: var(--white); background: var(--green); border-radius: 50%; }
+    .brand-mark svg { width: 15px; height: 15px; }
+    .event-label { color: var(--muted); font: 11px var(--mono); letter-spacing: 0; text-transform: uppercase; }
+
+    main { width: min(1140px, calc(100% - 40px)); margin: 0 auto; padding: 43px 0 64px; }
+
+    .intro { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 28px; }
+    .eyebrow { margin: 0 0 9px; color: var(--green); font: 11px var(--mono); text-transform: uppercase; }
+    h1 { margin: 0; font: 500 clamp(34px, 5vw, 52px)/1.05 var(--serif); letter-spacing: 0; }
+    .intro-copy { max-width: 340px; margin: 0 0 3px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+    .workspace { display: grid; grid-template-columns: minmax(0, 1fr) 330px; align-items: start; border: 1px solid var(--line); background: var(--white); }
+    .draw-panel { min-height: 610px; padding: clamp(22px, 4vw, 48px); border-right: 1px solid var(--line); }
+    .setup-panel { padding: 28px 24px; }
+
+    .step-head { display: flex; align-items: center; gap: 11px; margin-bottom: 20px; }
+    .step-number { width: 27px; height: 27px; display: grid; place-items: center; flex: 0 0 auto; border: 1px solid var(--line); border-radius: 50%; color: var(--muted); font: 11px var(--mono); }
+    .step-head h2 { margin: 0; font-size: 15px; font-weight: 600; }
+    .count-pill { margin-left: auto; color: var(--muted); font: 11px var(--mono); }
+
+    .draw-form { display: flex; gap: 9px; max-width: 510px; }
+    .turn-options { display: flex; max-width: 510px; margin-top: 9px; }
+    .text-button.opt-out-button { width: 100%; min-height: 43px; justify-content: center; padding: 0 12px; border: 1px solid #e4b5a7; border-radius: 3px; color: #a74e38; background: #fff8f4; font-size: 12px; font-weight: 600; }
+    .opt-out-button:hover:not(:disabled) { border-color: var(--coral); color: #873d2d; background: #fff0e9; }
+    .opt-out-button:disabled { opacity: .6; cursor: not-allowed; }
+    .name-input, .roster-input { width: 100%; min-width: 0; border: 1px solid var(--line); border-radius: 3px; background: #fff; outline: none; transition: border-color 160ms, box-shadow 160ms; }
+    .name-input { height: 47px; padding: 0 14px; }
+    .roster-input { min-height: 120px; padding: 12px; resize: vertical; font-size: 13px; line-height: 1.55; }
+    .name-input:focus, .roster-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(22, 107, 82, .1); }
+    .name-input::placeholder, .roster-input::placeholder { color: #9b9c94; }
+
+    .primary-button { min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; padding: 0 17px; border: 0; border-radius: 3px; color: white; background: var(--green); font-size: 13px; font-weight: 600; cursor: pointer; transition: background 160ms, transform 160ms; }
+    .primary-button:hover:not(:disabled) { background: var(--green-dark); transform: translateY(-1px); }
+    .primary-button:disabled { opacity: .45; cursor: not-allowed; }
+    .primary-button svg { width: 16px; height: 16px; }
+    .draw-form .primary-button { flex: 0 0 auto; }
+    .field-hint { margin: 9px 0 0; color: var(--muted); font-size: 12px; }
+    .message { min-height: 18px; margin: 7px 0 0; color: #b14f37; font-size: 12px; }
+
+    .wheel-stage { position: relative; width: min(350px, 84vw); aspect-ratio: 1; margin: 37px auto 22px; }
+    .wheel-shadow { position: absolute; inset: 15px 10px 3px 15px; border-radius: 50%; background: #c5c6bc; filter: blur(8px); opacity: .45; }
+    .wheel-canvas { position: relative; width: 100%; height: 100%; border-radius: 50%; filter: drop-shadow(0 4px 0 rgba(32, 38, 34, .14)); transform: rotate(0deg); }
+    .wheel-pointer { position: absolute; z-index: 2; top: -8px; left: 50%; width: 23px; height: 32px; transform: translateX(-50%); filter: drop-shadow(0 2px 1px rgba(0,0,0,.16)); }
+    .wheel-pointer svg { width: 100%; height: 100%; }
+    .wheel-center { position: absolute; inset: 50% auto auto 50%; width: 70px; aspect-ratio: 1; display: grid; place-items: center; transform: translate(-50%, -50%); border: 5px solid var(--white); border-radius: 50%; color: var(--ink); background: var(--gold); font: 11px var(--mono); text-transform: uppercase; box-shadow: 0 1px 4px #0002; }
+
+    .result { min-height: 61px; text-align: center; }
+    .result-label { margin: 0 0 5px; color: var(--muted); font: 10px var(--mono); text-transform: uppercase; }
+    .result-name { margin: 0; color: var(--green); font: 500 29px/1.1 var(--serif); }
+    .result-placeholder { margin: 0; color: #9a9b93; font: 500 19px/1.3 var(--serif); }
+    .draw-action { display: flex; justify-content: center; margin-top: 8px; }
+    .draw-action .primary-button { min-width: 172px; }
+
+    .setup-copy { margin: -8px 0 16px 38px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .roster-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .roster-actions .primary-button { flex: 1; min-height: 40px; padding: 0 12px; font-size: 12px; }
+    .text-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 0; border: 0; color: var(--muted); background: transparent; font-size: 12px; cursor: pointer; }
+    .text-button:hover { color: var(--ink); }
+    .text-button svg { width: 14px; height: 14px; }
+    .roster-status { display: flex; align-items: center; justify-content: space-between; padding: 19px 0 12px; margin-top: 8px; border-top: 1px solid var(--line); color: var(--muted); font: 11px var(--mono); }
+    .status-dot { width: 7px; height: 7px; display: inline-block; margin-right: 7px; border-radius: 50%; background: var(--coral); }
+    .status-dot.ready { background: #55a477; }
+
+    .log-heading { display: flex; align-items: center; gap: 8px; margin: 22px 0 12px; }
+    .log-heading h3 { margin: 0; font-size: 13px; font-weight: 600; }
+    .log-heading span { margin-left: auto; color: var(--muted); font: 10px var(--mono); }
+    .draw-log { max-height: 270px; overflow: auto; border-top: 1px solid var(--line); }
+    .empty-log { padding: 16px 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .log-row { display: grid; grid-template-columns: minmax(0, 1fr) 17px minmax(0, 1fr); align-items: center; gap: 7px; min-height: 42px; border-bottom: 1px solid #efefe9; font-size: 12px; }
+    .opt-out-log { max-height: 160px; overflow: auto; border-top: 1px solid var(--line); }
+    .opt-out-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 35px; border-bottom: 1px solid #efefe9; font-size: 12px; }
+    .opt-out-date { color: var(--muted); font: 10px var(--mono); }
+    .log-person { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .log-recipient { overflow: hidden; color: var(--green); font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+    .log-arrow { color: #aaa99e; text-align: center; }
+    .log-footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 12px; }
+    .log-footer .text-button { font-size: 11px; }
+
+    .toast { position: fixed; right: 22px; bottom: 22px; z-index: 4; padding: 12px 16px; color: white; background: var(--ink); font-size: 13px; opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity 180ms, transform 180ms; }
+    .toast.visible { opacity: 1; transform: translateY(0); }
+    .confetti { position: fixed; z-index: 3; width: 8px; height: 12px; top: 45%; left: 50%; pointer-events: none; animation: burst 900ms ease-out forwards; }
+    @keyframes burst { to { transform: translate(var(--x), var(--y)) rotate(600deg); opacity: 0; } }
+
+    @media (max-width: 760px) {
+      main { padding-top: 31px; }
+      .intro { align-items: start; flex-direction: column; gap: 11px; margin-bottom: 20px; }
+      .intro-copy { max-width: 470px; }
+      .workspace { grid-template-columns: 1fr; }
+      .draw-panel { min-height: auto; padding: 25px 22px 30px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .setup-panel { padding: 24px 22px; }
+      .wheel-stage { margin-top: 28px; }
+      .draw-log { max-height: 320px; }
+    }
+
+    @media (max-width: 420px) {
+      .topbar { height: 58px; padding: 0 18px; }
+      .event-label { font-size: 9px; }
+      main { width: calc(100% - 28px); }
+      .draw-form { flex-direction: column; }
+      .draw-form .primary-button { width: 100%; }
+      .wheel-stage { width: min(300px, 82vw); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 7v14M12 7H7.5a2.5 2.5 0 1 1 2.5-2.5C10 6 12 7 12 7Zm0 0h4.5A2.5 2.5 0 1 0 14 4.5C14 6 12 7 12 7Z" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span>good cheer</span>
+    </div>
+    <span class="event-label">A little something for everyone</span>
+  </header>
+
+  <main>
+    <section class="intro">
+      <div>
+        <p class="eyebrow">The gift exchange</p>
+        <h1>One for you.<br>One for someone new.</h1>
+      </div>
+      <p class="intro-copy">Add everyone to the guest list, then let each person take a turn. No one gets their own name, and every gift has a giver.</p>
+    </section>
+
+    <section class="workspace" aria-label="Gift exchange draw">
+      <div class="draw-panel">
+        <div class="step-head">
+          <span class="step-number">01</span>
+          <h2>Who's taking a turn?</h2>
+          <span class="count-pill" id="turn-count">0 / 0 drawn</span>
+        </div>
+        <form class="draw-form" id="draw-form">
+          <input class="name-input" id="giver-name" list="participant-options" autocomplete="off" placeholder="Enter your name" aria-label="Your name" disabled>
+          <datalist id="participant-options"></datalist>
+          <button class="primary-button" id="spin-button" type="submit" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v3m0 12v3m9-9h-3M6 12H3m15.36-6.36-2.12 2.12M7.76 16.24l-2.12 2.12m12.72 0-2.12-2.12M7.76 7.76 5.64 5.64" stroke-linecap="round"/><circle cx="12" cy="12" r="5"/></svg>
+            Spin the wheel
+          </button>
+        </form>
+        <div class="turn-options">
+          <button class="text-button opt-out-button" id="opt-out-button" type="button" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="4"/><path d="M3 21v-2a6 6 0 0 1 12 0v2m2-8h6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            I won't participate
+          </button>
+        </div>
+        <p class="field-hint">Enter your name to spin, or choose not to take part.</p>
+        <p class="message" id="draw-message" role="status" aria-live="polite"></p>
+
+        <div class="wheel-stage" aria-label="Gift exchange wheel">
+          <div class="wheel-shadow" aria-hidden="true"></div>
+          <div class="wheel-pointer" aria-hidden="true"><svg viewBox="0 0 24 34"><path d="M12 33 1.5 3.5A2.5 2.5 0 0 1 4 0h16a2.5 2.5 0 0 1 2.5 3.5L12 33Z" fill="#202622" stroke="#fffefa" stroke-width="2"/></svg></div>
+          <canvas class="wheel-canvas" id="wheel" width="600" height="600"></canvas>
+          <div class="wheel-center">good<br>luck</div>
+        </div>
+
+        <div class="result" aria-live="polite">
+          <p class="result-label" id="result-label">Your recipient will appear here</p>
+          <p class="result-placeholder" id="result-name">Ready when you are</p>
+        </div>
+        <div class="draw-action">
+          <button class="text-button" id="next-turn" type="button" hidden>
+            Next person <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7 7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <aside class="setup-panel">
+        <div class="step-head">
+          <span class="step-number">02</span>
+          <h2>Guest list</h2>
+          <span class="count-pill" id="guest-count">0 people</span>
+        </div>
+        <p class="setup-copy">Add one name per line. Nobody draws their own name, and each person can be selected only once.</p>
+        <label for="roster" class="field-hint" style="display:block;margin:0 0 7px;color:var(--ink);font-weight:600">Names</label>
+        <textarea class="roster-input" id="roster" placeholder="Alex Morgan&#10;Sam Lee&#10;Taylor Kim" spellcheck="false"></textarea>
+        <div class="roster-actions">
+          <button class="primary-button" id="save-roster" type="button">Save guest list</button>
+        </div>
+        <p class="message" id="roster-message" role="status" aria-live="polite"></p>
+        <div class="roster-status">
+          <span><i class="status-dot" id="status-dot"></i><span id="status-text">Not started</span></span>
+          <span id="saved-label">Saved here</span>
+        </div>
+
+        <div class="log-heading">
+          <h3>Not participating</h3>
+          <span id="opt-out-count">0 names</span>
+        </div>
+        <div class="opt-out-log" id="opt-out-log" aria-live="polite"></div>
+
+        <div class="log-heading">
+          <h3>Draw record</h3>
+          <span id="log-count">0 matches</span>
+        </div>
+        <div class="draw-log" id="draw-log" aria-live="polite"></div>
+        <div class="log-footer">
+          <button class="text-button" id="export-log" type="button" title="Download the draw record as CSV" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 17v4h14v-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Export CSV
+          </button>
+          <button class="text-button" id="reset-event" type="button" title="Clear the guest list and draw record">Reset event</button>
+        </div>
+      </aside>
+    </section>
+  </main>
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    (() => {
+      const STORAGE_KEY = 'good-cheer-exchange-v1';
+      const colors = ['#e77353', '#e8b945', '#166b52', '#467cbd', '#d98f3e', '#4f9a88', '#c35650', '#92aa4c'];
+      const byId = (id) => document.getElementById(id);
+      const elements = {
+        roster: byId('roster'), saveRoster: byId('save-roster'), rosterMessage: byId('roster-message'),
+        guestCount: byId('guest-count'), statusDot: byId('status-dot'), statusText: byId('status-text'),
+        name: byId('giver-name'), options: byId('participant-options'), form: byId('draw-form'),
+        spin: byId('spin-button'), optOut: byId('opt-out-button'), drawMessage: byId('draw-message'), count: byId('turn-count'),
+        resultLabel: byId('result-label'), result: byId('result-name'), next: byId('next-turn'),
+        log: byId('draw-log'), logCount: byId('log-count'), optOutLog: byId('opt-out-log'),
+        optOutCount: byId('opt-out-count'), export: byId('export-log'),
+        reset: byId('reset-event'), canvas: byId('wheel'), toast: byId('toast')
+      };
+      let state = loadState();
+      let spinning = false;
+      let toastTimer;
+
+      function loadState() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+          if (saved && Array.isArray(saved.participants) && Array.isArray(saved.draws) && saved.assignments && typeof saved.assignments === 'object') {
+            return { ...saved, optOuts: Array.isArray(saved.optOuts) ? saved.optOuts : [] };
+          }
+        } catch (error) {
+          console.warn('Could not load the saved gift exchange.', error);
+        }
+        return { participants: [], assignments: {}, draws: [], optOuts: [] };
+      }
+
+      function persist() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function randomIndex(max) {
+        if (window.crypto && crypto.getRandomValues) {
+          const values = new Uint32Array(1);
+          const limit = Math.floor(0x100000000 / max) * max;
+          do { crypto.getRandomValues(values); } while (values[0] >= limit);
+          return values[0] % max;
+        }
+        return Math.floor(Math.random() * max);
+      }
+
+      function createAssignments(participants) {
+        const shuffled = participants.slice();
+        for (let index = shuffled.length - 1; index > 0; index -= 1) {
+          const other = randomIndex(index);
+          [shuffled[index], shuffled[other]] = [shuffled[other], shuffled[index]];
+        }
+        return Object.fromEntries(shuffled.map((giver, index) => [giver, shuffled[(index + 1) % shuffled.length]]));
+      }
+
+      function createRemainingAssignments(participants, draws) {
+        const drawnGivers = new Set(draws.map((draw) => draw.giver));
+        const usedRecipients = new Set(draws.map((draw) => draw.recipient));
+        const givers = participants.filter((name) => !drawnGivers.has(name));
+        const recipients = participants.filter((name) => !usedRecipients.has(name));
+        if (givers.length !== recipients.length) return null;
+        if (givers.length === 0) return {};
+
+        for (let attempt = 0; attempt < 100; attempt += 1) {
+          const shuffled = recipients.slice();
+          for (let index = shuffled.length - 1; index > 0; index -= 1) {
+            const other = randomIndex(index + 1);
+            [shuffled[index], shuffled[other]] = [shuffled[other], shuffled[index]];
+          }
+          if (givers.every((giver, index) => giver !== shuffled[index])) {
+            return Object.fromEntries(givers.map((giver, index) => [giver, shuffled[index]]));
+          }
+        }
+
+        const sortedGivers = givers.slice().sort((left, right) => normalizeName(left).localeCompare(normalizeName(right)));
+        const sortedRecipients = recipients.slice().sort((left, right) => normalizeName(left).localeCompare(normalizeName(right)));
+        for (let offset = 0; offset < sortedRecipients.length; offset += 1) {
+          const shifted = sortedRecipients.slice(offset).concat(sortedRecipients.slice(0, offset));
+          if (sortedGivers.every((giver, index) => giver !== shifted[index])) {
+            return Object.fromEntries(sortedGivers.map((giver, index) => [giver, shifted[index]]));
+          }
+        }
+        return null;
+      }
+
+      function normalizeName(name) { return name.trim().toLocaleLowerCase(); }
+
+      function updateOptOutButton() {
+        const entered = normalizeName(elements.name.value);
+        const participant = state.participants.find((name) => normalizeName(name) === entered);
+        const alreadyDrew = state.draws.some((draw) => draw.giver === participant);
+        elements.optOut.disabled = !participant || alreadyDrew || spinning;
+      }
+
+      function render() {
+        const participants = state.participants;
+        const drawn = new Set(state.draws.map((draw) => draw.giver));
+        const available = participants.length >= 2 && drawn.size < participants.length;
+        elements.name.disabled = participants.length === 0 || spinning;
+        elements.spin.disabled = !available || spinning;
+        updateOptOutButton();
+        elements.count.textContent = `${drawn.size.toLocaleString()} / ${participants.length.toLocaleString()} drawn`;
+        elements.guestCount.textContent = `${participants.length.toLocaleString()} ${participants.length === 1 ? 'person' : 'people'}`;
+        elements.statusDot.classList.toggle('ready', participants.length >= 2);
+        elements.statusText.textContent = participants.length < 2 ? 'Not started' : drawn.size === participants.length ? 'All gifts matched' : 'Ready to draw';
+        elements.options.replaceChildren(...participants.filter((name) => !drawn.has(name)).map((name) => {
+          const option = document.createElement('option');
+          option.value = name;
+          return option;
+        }));
+        elements.logCount.textContent = `${state.draws.length.toLocaleString()} ${state.draws.length === 1 ? 'match' : 'matches'}`;
+        elements.optOutCount.textContent = `${state.optOuts.length.toLocaleString()} ${state.optOuts.length === 1 ? 'name' : 'names'}`;
+        elements.export.disabled = state.draws.length === 0;
+        elements.optOutLog.replaceChildren();
+        if (state.optOuts.length === 0) {
+          const empty = document.createElement('p');
+          empty.className = 'empty-log';
+          empty.textContent = 'People who opt out are documented here.';
+          elements.optOutLog.append(empty);
+        } else {
+          const fragment = document.createDocumentFragment();
+          state.optOuts.forEach((entry) => {
+            const row = document.createElement('div');
+            row.className = 'opt-out-row';
+            const name = document.createElement('span');
+            name.textContent = typeof entry === 'string' ? entry : entry.name;
+            row.append(name);
+            if (typeof entry !== 'string' && entry.optedOutAt) {
+              const date = document.createElement('time');
+              date.className = 'opt-out-date';
+              date.dateTime = entry.optedOutAt;
+              date.textContent = new Date(entry.optedOutAt).toLocaleDateString();
+              row.append(date);
+            }
+            fragment.append(row);
+          });
+          elements.optOutLog.append(fragment);
+        }
+        elements.log.replaceChildren();
+        if (state.draws.length === 0) {
+          const empty = document.createElement('p');
+          empty.className = 'empty-log';
+          empty.textContent = 'Your completed matches will be kept here.';
+          elements.log.append(empty);
+        } else {
+          const fragment = document.createDocumentFragment();
+          state.draws.forEach((draw) => {
+            const row = document.createElement('div');
+            row.className = 'log-row';
+            const giver = document.createElement('span');
+            giver.className = 'log-person';
+            giver.textContent = draw.giver;
+            const arrow = document.createElement('span');
+            arrow.className = 'log-arrow';
+            arrow.textContent = '\u2192';
+            const recipient = document.createElement('span');
+            recipient.className = 'log-recipient';
+            recipient.textContent = draw.recipient;
+            row.append(giver, arrow, recipient);
+            fragment.append(row);
+          });
+          elements.log.append(fragment);
+        }
+        drawWheel(participants.length);
+      }
+
+      function drawWheel(count) {
+        const canvas = elements.canvas;
+        const context = canvas.getContext('2d');
+        const center = canvas.width / 2;
+        const radius = center - 7;
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        const slices = Math.max(count, 12);
+        const slice = Math.PI * 2 / slices;
+        for (let index = 0; index < slices; index += 1) {
+          context.beginPath();
+          context.moveTo(center, center);
+          context.arc(center, center, radius, -Math.PI / 2 + index * slice, -Math.PI / 2 + (index + 1) * slice);
+          context.closePath();
+          context.fillStyle = colors[index % colors.length];
+          context.fill();
+          context.strokeStyle = '#fffefa';
+          context.lineWidth = 2;
+          context.stroke();
+        }
+        context.beginPath();
+        context.arc(center, center, radius, 0, Math.PI * 2);
+        context.strokeStyle = '#fffefa';
+        context.lineWidth = 6;
+        context.stroke();
+      }
+
+      function showToast(message) {
+        elements.toast.textContent = message;
+        elements.toast.classList.add('visible');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => elements.toast.classList.remove('visible'), 2600);
+      }
+
+      function showConfetti() {
+        for (let index = 0; index < 22; index += 1) {
+          const piece = document.createElement('i');
+          piece.className = 'confetti';
+          piece.style.background = colors[index % colors.length];
+          piece.style.setProperty('--x', `${Math.round(Math.random() * 360 - 180)}px`);
+          piece.style.setProperty('--y', `${Math.round(Math.random() * 240 - 130)}px`);
+          document.body.append(piece);
+          piece.addEventListener('animationend', () => piece.remove(), { once: true });
+        }
+      }
+
+      elements.saveRoster.addEventListener('click', () => {
+        const names = elements.roster.value.split(/[\n,;]+/).map((name) => name.trim()).filter(Boolean);
+        const seen = new Set();
+        const duplicate = names.find((name) => {
+          const normalized = normalizeName(name);
+          if (seen.has(normalized)) return true;
+          seen.add(normalized);
+          return false;
+        });
+        if (names.length < 2) {
+          elements.rosterMessage.textContent = 'Add at least two names to start an exchange.';
+          return;
+        }
+        if (duplicate) {
+          elements.rosterMessage.textContent = `“${duplicate}” appears more than once. Each person needs a unique name.`;
+          return;
+        }
+        const hasActivity = state.draws.length > 0 || state.optOuts.length > 0;
+        if (hasActivity && !window.confirm('Changing the guest list will erase the current draw record and opt-out documentation. Continue?')) return;
+        state = { participants: names, assignments: createAssignments(names), draws: [], optOuts: [] };
+        persist();
+        elements.rosterMessage.textContent = '';
+        elements.drawMessage.textContent = '';
+        elements.resultLabel.textContent = 'Your recipient will appear here';
+        elements.result.textContent = 'Ready when you are';
+        elements.result.className = 'result-placeholder';
+        elements.next.hidden = true;
+        render();
+        showToast(`${names.length.toLocaleString()} names saved. Let the draws begin.`);
+      });
+
+      elements.name.addEventListener('input', updateOptOutButton);
+
+      elements.optOut.addEventListener('click', () => {
+        if (spinning) return;
+        const entered = elements.name.value.trim();
+        const participant = state.participants.find((name) => normalizeName(name) === normalizeName(entered));
+        if (!participant) {
+          elements.drawMessage.textContent = 'Enter a name exactly as it appears on the guest list.';
+          return;
+        }
+        if (state.draws.some((draw) => draw.giver === participant)) {
+          elements.drawMessage.textContent = `${participant} has already taken a turn and cannot opt out now.`;
+          return;
+        }
+        if (state.draws.some((draw) => draw.recipient === participant)) {
+          elements.drawMessage.textContent = `${participant} has already been selected as a recipient, so opting out would change a completed match.`;
+          return;
+        }
+        const participants = state.participants.filter((name) => name !== participant);
+        const assignments = createRemainingAssignments(participants, state.draws);
+        if (!assignments) {
+          elements.drawMessage.textContent = 'Opting out now would leave no valid no-self matches for everyone remaining.';
+          return;
+        }
+        state.participants = participants;
+        state.assignments = assignments;
+        state.optOuts.push({ name: participant, optedOutAt: new Date().toISOString() });
+        persist();
+        elements.roster.value = participants.join('\n');
+        elements.name.value = '';
+        elements.drawMessage.textContent = '';
+        elements.resultLabel.textContent = 'Your recipient will appear here';
+        elements.result.textContent = 'Ready when you are';
+        elements.result.className = 'result-placeholder';
+        elements.next.hidden = true;
+        render();
+        showToast(`${participant} was removed from the exchange and documented.`);
+      });
+
+      elements.form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (spinning) return;
+        const entered = elements.name.value.trim();
+        const giver = state.participants.find((name) => normalizeName(name) === normalizeName(entered));
+        if (!giver) {
+          elements.drawMessage.textContent = 'Enter a name exactly as it appears on the guest list.';
+          return;
+        }
+        if (state.draws.some((draw) => draw.giver === giver)) {
+          elements.drawMessage.textContent = `${giver} has already taken a turn.`;
+          return;
+        }
+        const recipient = state.assignments[giver];
+        const alreadySelected = new Set(state.draws.map((draw) => draw.recipient));
+        if (alreadySelected.has(recipient)) {
+          elements.drawMessage.textContent = 'This assignment was already used. The draw was blocked; reset the guest list to continue.';
+          return;
+        }
+        if (!recipient || recipient === giver) {
+          elements.drawMessage.textContent = 'This draw could not be verified. Please reset the guest list.';
+          return;
+        }
+        spinning = true;
+        elements.drawMessage.textContent = '';
+        elements.next.hidden = true;
+        elements.resultLabel.textContent = `${giver}, you're giving a gift to`;
+        elements.result.textContent = 'The wheel is spinning...';
+        elements.result.className = 'result-placeholder';
+        elements.name.disabled = true;
+        elements.spin.disabled = true;
+        elements.optOut.disabled = true;
+        const targetIndex = state.participants.indexOf(recipient);
+        const segmentSize = 360 / Math.max(state.participants.length, 12);
+        const destination = 360 * 6 + 360 - (targetIndex + 0.5) * segmentSize;
+        elements.canvas.style.transition = 'none';
+        elements.canvas.style.transform = 'rotate(0deg)';
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          elements.canvas.style.transition = 'transform 4.2s cubic-bezier(.12,.72,.12,1)';
+          elements.canvas.style.transform = `rotate(${destination}deg)`;
+        }));
+        setTimeout(() => {
+          state.draws.push({ giver, recipient, drawnAt: new Date().toISOString() });
+          persist();
+          spinning = false;
+          elements.result.textContent = recipient;
+          elements.result.className = 'result-name';
+          elements.next.hidden = false;
+          elements.name.value = '';
+          render();
+          showConfetti();
+        }, 4300);
+      });
+
+      elements.next.addEventListener('click', () => {
+        elements.name.focus();
+        elements.resultLabel.textContent = 'Your recipient will appear here';
+        elements.result.textContent = 'Ready when you are';
+        elements.result.className = 'result-placeholder';
+        elements.next.hidden = true;
+      });
+
+      elements.export.addEventListener('click', () => {
+        if (!state.draws.length) return;
+        const quote = (value) => `"${String(value).replaceAll('"', '""')}"`;
+        const rows = [['Giver', 'Gift recipient', 'Drawn at'], ...state.draws.map((draw) => [draw.giver, draw.recipient, draw.drawnAt])];
+        const csv = rows.map((row) => row.map(quote).join(',')).join('\r\n');
+        const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'gift-exchange-draws.csv';
+        link.click();
+        URL.revokeObjectURL(url);
+      });
+
+      elements.reset.addEventListener('click', () => {
+        if (!window.confirm('Clear the guest list and all completed draws? This cannot be undone.')) return;
+        state = { participants: [], assignments: {}, draws: [], optOuts: [] };
+        persist();
+        elements.roster.value = '';
+        elements.name.value = '';
+        elements.rosterMessage.textContent = '';
+        elements.drawMessage.textContent = '';
+        elements.resultLabel.textContent = 'Your recipient will appear here';
+        elements.result.textContent = 'Ready when you are';
+        elements.result.className = 'result-placeholder';
+        elements.next.hidden = true;
+        elements.canvas.style.transition = 'none';
+        elements.canvas.style.transform = 'rotate(0deg)';
+        render();
+        showToast('The exchange has been reset.');
+      });
+
+      elements.roster.value = state.participants.join('\n');
+      render();
+    })();
+  </script>
+</body>
+</html>
